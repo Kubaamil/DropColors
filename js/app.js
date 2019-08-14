@@ -1,59 +1,114 @@
-let player = true;
-const player1 = prompt("Wprowadź nazwę gracza 1");
-const player2 = prompt("Wprowadź nazwę gracza 2");
-$('.game-update').text(`Tura gracza: ${player1}`);
+let playerBool = true;
+const player1 = prompt("Wprowadź nazwę gracza 1. Będziesz miał/a niebieski kolor");
+const player2 = prompt("Wprowadź nazwę gracza 2. Będziesz miał/a pomarańczowy kolor");
+const gameUpdate = $('.game-update');
+let colorVal = "blue";
+let colorClass = "p1";
+
+gameUpdate.text(`Tura gracza: ${player1}`);
+gameUpdate.css("color", colorVal);
 
 function changePlayerName() {
-    player = !player;
-    if(player) {
-        $('.game-update').text(`Tura gracza: ${player1}`);
+    playerBool = !playerBool;
+    if (playerBool) {
+        colorVal = "blue";
+        colorClass = "p1";
+        gameUpdate.text(`Tura gracza: ${player1}`);
+        gameUpdate.css("color", colorVal);
     } else {
-        $('.game-update').text(`Tura gracza: ${player2}`);
+        colorVal = "orangered";
+        colorClass = "p2";
+        gameUpdate.text(`Tura gracza: ${player2}`);
+        gameUpdate.css("color", colorVal);
     }
 }
 
-$('.container div').on('click', function() {
-    const column = $(this).parent().attr('class');
-    let row;
+function selectColumn(el) {
+    const classList = $(el).attr('class').split(" ");
+    const re = /col-[1-7]/g;
+    let columnVal;
 
-    $($(`.${column}`).children().get().reverse()).each(function() {
-    if(player){
-            if (!($(this).hasClass('p1') || $(this).hasClass('p2'))) {
-                $(this).addClass('p1');
-                row = $(this).attr('class');
-                return false;
-            }
-    } else if(!player){
-            if (!($(this).hasClass('p1') || $(this).hasClass('p2'))) {
-                $(this).addClass('p2');
-                row = $(this).attr('class');
-                return false;
-            }
+    for (const el of classList) {
+        if (el.match(re)) {
+            columnVal = el.match(re).toString();
+        }
     }
-    })
+    return columnVal;
+}
 
-    const checkColumn = $($(`.${column}`).children().get().reverse()).toArray();
-    checkColumn.some(function(a,i,aa){
-        if(i>1) {
-            if(a.classList.contains('p1') && aa[i-1].classList.contains('p1') && aa[i-2].classList.contains('p1') && aa[i-3].classList.contains('p1')){
-                alert(`${player1} wygrał!!!!!`);
-            } else if(a.classList.contains('p2') && aa[i-1].classList.contains('p2') && aa[i-2].classList.contains('p2') && aa[i-3].classList.contains('p2')){
-                alert(`${player2} wygrał!!!!!`);
-            }
-    }
-    })
-
-    const checkRow = $(`.${row.split(" ")[0]}`).toArray();
-    console.log(row.split(" ")[0]);
-    checkRow.some(function(a,i,aa){
-        if (i>1) {
-            if(a.classList.contains('p1') && aa[i-1].classList.contains('p1') && aa[i-2].classList.contains('p1') && aa[i-3].classList.contains('p1')){
-                alert(`${player1} wygrał!!!!!`);
-            } else if(a.classList.contains('p2') && aa[i-1].classList.contains('p2') && aa[i-2].classList.contains('p2') && aa[i-3].classList.contains('p2')){
-                alert(`${player2} wygrał!!!!!`);
+function colorCircle(columnEl) {
+    for (const el of columnEl) {
+        if ($(el).css('background-color') === 'rgb(128, 128, 128)') {
+            $(el).addClass(colorClass);
+            changePlayerName();
+            break;
+        }
     }
 }
-    })
 
-    changePlayerName();
+function updateArray() {
+    const localArray = [];
+
+    for (let i = 7; i > 0; i--) {
+        const tmpArray = [];
+        for (const el of $(`.row-${i}`)) {
+            if ($(el).hasClass('p1')) {
+                tmpArray.push('p1');
+            } else if ($(el).hasClass('p2')) {
+                tmpArray.push('p2');
+            } else {
+                tmpArray.push(null);
+            }
+        }
+        localArray.push(tmpArray);
+    }
+
+    return localArray;
+}
+
+function checkColumn(array) {
+    for (let i = array.length - 1; i >= 3; i--) {
+        for (let j = 0; j < array[i].length; j++) {
+            if ((array[i][j] === "p1" || array[i][j] === "p2") && array[i][j] === array[i - 1][j] && array[i][j] === array[i - 2][j] && array[i][j] === array[i - 3][j]) {
+                alert(`${array[i][j]} WYGRAŁ!!!`);
+            }
+        }
+    }
+}
+
+function checkRow(array) {
+    for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array[i].length - 3; j++) {
+            if ((array[i][j] === "p1" || array[i][j] === "p2") && array[i][j] === array[i][j + 1] && array[i][j] === array[i][j + 2] && array[i][j] === array[i][j + 3]) {
+                alert(`${array[i][j]} WYGRAŁ!!!`);
+            }
+        }
+    }
+}
+
+function checkDiagonal(array) {
+    for (let i = 0; i < array.length - 3; i++) {
+        for (let j = 0; j < array[i].length - 3; j++) {
+            if ((array[i][j] === "p1" || array[i][j] === "p2") && array[i][j] === array[i + 1][j + 1] && array[i][j] === array[i + 2][j + 2] && array[i][j] === array[i + 3][j + 3]) {
+                alert(`${array[i][j]} WYGRAŁ!!!`);
+            }
+        }
+    }
+
+    for (let i = array.length - 1; i >= 3; i--) {
+        for (let j = 0; j < array[i].length - 3; j++) {
+            if ((array[i][j] === "p1" || array[i][j] === "p2") && array[i][j] === array[i - 1][j + 1] && array[i][j] === array[i - 2][j + 2] && array[i][j] === array[i - 3][j + 3]) {
+                alert(`${array[i][j]} WYGRAŁ!!!`);
+            }
+        }
+    }
+}
+
+// // @TODO upload on server
+
+$('.container div').click(function () {
+    colorCircle($(`.${selectColumn(this)}`).get().reverse())
+    checkRow(updateArray());
+    checkColumn(updateArray());
+    checkDiagonal(updateArray());
 });
