@@ -1,6 +1,6 @@
 let playerBool = true;
-const player1 = prompt("Wprowadź nazwę gracza 1. Będziesz miał/a niebieski kolor");
-const player2 = prompt("Wprowadź nazwę gracza 2. Będziesz miał/a pomarańczowy kolor");
+const player1 = "gracz 1"//prompt("Wprowadź nazwę gracza 1. Będziesz miał/a niebieski kolor");
+const player2 = "gracz 2"//prompt("Wprowadź nazwę gracza 2. Będziesz miał/a pomarańczowy kolor");
 const gameUpdate = $('.game-update');
 let colorVal = "blue";
 let colorClass = "p1";

@@ -15,6 +15,24 @@ body {
 
 .info {
   text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info .logo {
+  background-image: url("../img/logo.PNG");
+  background-size: cover;
+  width: 112.5px;
+  height: 50px;
+}
+
+@media (min-width: 460px) {
+  .info .logo {
+    width: 225px;
+    height: 100px;
+  }
 }
 
 .info h1 {
